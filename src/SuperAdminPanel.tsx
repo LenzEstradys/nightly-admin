@@ -437,7 +437,7 @@ export default function SuperAdminPanel({ onVolver }: SuperAdminPanelProps) {
                           {local.tipo}
                         </span>
                         {local.verificado && (
-                          <CheckCircle size={18} className="text-green-400" title="Verificado" />
+                          <CheckCircle size={18} className="text-green-400" aria-label="Verificado" />
                         )}
                       </div>
                       
