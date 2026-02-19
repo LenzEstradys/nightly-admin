@@ -1,3 +1,8 @@
+/**
+ * admin/src/Login.tsx
+ * Componente de login refactorizado con mejor manejo de autenticación
+ */
+
 import { useState } from 'react';
 import { supabase } from './supabase';
 import { LogIn, AlertCircle, UserPlus, Eye, EyeOff, Sparkles } from 'lucide-react';
@@ -20,6 +25,7 @@ export default function Login({ onLoginSuccess, onIrARegistro }: LoginProps) {
     setCargando(true);
 
     try {
+      // Intentar login con Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -28,24 +34,25 @@ export default function Login({ onLoginSuccess, onIrARegistro }: LoginProps) {
       if (error) throw error;
 
       if (data.user) {
-        const { data: perfil, error: perfilError } = await supabase
-          .from('perfiles')
-          .select('rol, local_asignado_id')
-          .eq('id', data.user.id)
-          .single();
-
-        if (perfilError) throw new Error('Error al obtener perfil');
-
-        if (!perfil || (perfil.rol !== 'admin' && perfil.rol !== 'propietario')) {
-          await supabase.auth.signOut();
-          throw new Error('No tienes permisos para acceder al panel admin');
-        }
-
+        // El hook useAuth se encargará de verificar el rol
+        // automáticamente cuando detecte el cambio de sesión
         onLoginSuccess();
       }
     } catch (error: any) {
       console.error('Error en login:', error);
-      setError(error.message || 'Error al iniciar sesión');
+      
+      // Mensajes de error más amigables
+      let errorMessage = 'Error al iniciar sesión';
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = 'Email o contraseña incorrectos';
+      } else if (error.message?.includes('Email not confirmed')) {
+        errorMessage = 'Por favor confirma tu email antes de iniciar sesión';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setCargando(false);
     }
