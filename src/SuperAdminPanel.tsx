@@ -115,8 +115,8 @@ export default function SuperAdminPanel({ onVolver }: SuperAdminPanelProps) {
         todosLosLocales,
         permisos.userId
       );
-      setMisLocales(mis);
-      setOtrosLocales(otros);
+      setMisLocales(mis as LocalConPropietario[]);
+      setOtrosLocales(otros as LocalConPropietario[]);
       
       setEstadisticas({
         total_locales: todosLosLocales.length,

@@ -43,7 +43,7 @@ export async function getUserRole(userId: string): Promise<UserRole> {
   // 2. Verificar si es propietario
   const { data: perfil, error: perfilError } = await supabase
     .from('perfiles')
-    .select('id, nombre_usuario, nombre_completo, puntos, es_vip, rol, local_asignado_id, updated_at')
+    .select('id, nombre_completo, rol, local_asignado_id, plan, plan_vence_en, updated_at')
     .eq('id', userId)
     .maybeSingle();
 
@@ -58,7 +58,7 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     // mostrará el mensaje "Sin local asignado" sin crashear.
     return {
       type: 'propietario',
-      data: perfil as Propietario,
+      data: perfil as unknown as Propietario,
       permissions: PERMISSIONS.propietario,
     };
   }
