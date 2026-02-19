@@ -21,6 +21,8 @@ export interface Propietario {
   nombre_completo: string | null;
   rol: 'propietario';
   local_asignado_id: string | null;
+  plan?: string;
+  plan_vence_en?: string | null;
   created_at: string;
   updated_at: string;
 }

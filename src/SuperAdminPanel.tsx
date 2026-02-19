@@ -33,8 +33,24 @@ interface LocalConPropietario {
   nombre: string;
   tipo: string;
   direccion: string;
+  telefono: string | null;
   activo: boolean;
   verificado: boolean;
+  capacidad_actual: number;
+  estado: string;
+  tiempo_espera: number;
+  tiene_musica_en_vivo: boolean;
+  es_zona_segura: boolean;
+  musica_actual: string | null;
+  promocion: string | null;
+  instagram: string | null;
+  facebook: string | null;
+  horario_apertura: string | null;
+  horario_cierre: string | null;
+  rango_precio: string | null;
+  descripcion: string | null;
+  tags: string[] | null;
+  fotos: string[] | null;
   codigo_invitacion: string | null;
   codigo_usado: boolean;
   propietario_id: string | null;
@@ -42,12 +58,13 @@ interface LocalConPropietario {
   propietario_email: string | null;
   propietario_plan: string | null;
   propietario_plan_vence_en: string | null;
-  capacidad_actual: number;
-  estado: string;
   creado_por_id: string | null;
   creado_por_nombre: string | null;
   creado_por_email: string | null;
   fecha_creacion: string;
+  fecha_actualizacion: string | null;
+  updated_at: string | null;
+  [key: string]: unknown;
 }
 
 interface SuperAdminPanelProps {
@@ -360,7 +377,7 @@ export default function SuperAdminPanel({ onVolver }: SuperAdminPanelProps) {
                         {local.activo ? '🟢 Activo' : '🔴 Inactivo'}
                       </span>
                       {local.verificado && (
-                        <Shield size={14} className="text-blue-400" title="Verificado" />
+                        <Shield size={14} className="text-blue-400" aria-label="Verificado" />
                       )}
                     </div>
 

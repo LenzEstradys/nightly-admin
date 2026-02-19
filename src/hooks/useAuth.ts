@@ -75,12 +75,8 @@ export function useAuth(): UseAuthReturn {
           // Token renovado silenciosamente — solo actualizar user
           setUser(session.user);
 
-        } else if (
-          event === 'USER_UPDATED' ||
-          // Supabase emite SIGNED_OUT sin session cuando el token expira
-          (event === 'SIGNED_OUT' && !session)
-        ) {
-          // No hacer nada extra aquí, lo maneja el bloque SIGNED_OUT de arriba
+        } else if (event === 'USER_UPDATED') {
+          // No hacer nada extra aquí
         }
 
         // Detectar token expirado: Supabase intenta refresh y falla
