@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { supabase } from './supabase';
-import { LogIn, AlertCircle, UserPlus, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { LogIn, AlertCircle, UserPlus, Eye, EyeOff } from 'lucide-react';
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -70,13 +70,10 @@ export default function Login({ onLoginSuccess, onIrARegistro }: LoginProps) {
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="inline-block relative mb-6">
-            <div className="text-7xl mb-2 animate-bounce-slow">🌃</div>
-            <div className="absolute -top-2 -right-2">
-              <Sparkles className="text-yellow-400 animate-pulse" size={24} />
-            </div>
+            <img src="/logo.png" alt="LaMovida" className="w-24 h-24 rounded-2xl mx-auto" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-3 animate-gradient">
-            Nightly Admin
+            LaMovida
           </h1>
           <p className="text-gray-400 text-lg">Panel de Control para Propietarios</p>
           <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
@@ -182,7 +179,7 @@ export default function Login({ onLoginSuccess, onIrARegistro }: LoginProps) {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-500">
-          <p>© 2024 Nightly. Todos los derechos reservados.</p>
+          <p>© 2025 LaMovida. Todos los derechos reservados.</p>
         </div>
       </div>
 
