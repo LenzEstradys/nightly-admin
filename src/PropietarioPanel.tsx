@@ -221,11 +221,30 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
     setSubiendoFoto(true);
     try {
       const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      
+      // Comprimir imagen antes de subir (máx 1200px, calidad 80%)
       const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve((reader.result as string).split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          const MAX = 1200;
+          let w = img.width;
+          let h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+            else { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d')!;
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.8);
+          URL.revokeObjectURL(url);
+          resolve(compressed.split(',')[1]);
+        };
+        img.onerror = reject;
+        img.src = url;
       });
       const result = await backendService.subirFotoLocal(base64, extension);
       setFotos(result.fotos);
@@ -520,7 +539,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
                       {['$', '$$', '$$$', '$$$$'].map(r => (
                         <button key={r} onClick={() => setRangoPrecio(r)}
                           className={`py-2 rounded-lg text-sm font-bold transition-colors ${
-                            rangoPrecio === r ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            rangoPrecio === r ? 'bg-purple-600 text-white border-purple-500' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 border-gray-600'
                           }`}>{r}</button>
                       ))}
                     </div>
