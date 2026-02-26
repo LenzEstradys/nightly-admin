@@ -92,6 +92,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
   const [telefono, setTelefono] = useState('');
   const [fotos, setFotos] = useState<string[]>([]);
   const [subiendoFoto, setSubiendoFoto] = useState(false);
+  const [uploadProgreso, setUploadProgreso] = useState(0);
   const [eliminandoFoto, setEliminandoFoto] = useState<string | null>(null);
 
   const promosUsadas = local ? getPromosEsteMes(local.id) : 0;
@@ -205,54 +206,57 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validar formato
     const formatosPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!formatosPermitidos.includes(file.type)) {
       mostrarMensaje('error', '❌ Formato no permitido. Usa JPG, PNG o WebP');
       e.target.value = '';
       return;
     }
-    // Validar tamaño (5MB máximo)
     if (file.size > 5 * 1024 * 1024) {
       mostrarMensaje('error', '❌ La foto no puede superar 5MB');
       e.target.value = '';
       return;
     }
+
     setSubiendoFoto(true);
+    setUploadProgreso(0);
     try {
-      const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      
-      // Comprimir imagen antes de subir (máx 1200px, calidad 80%)
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = () => {
-          const MAX = 1200;
-          let w = img.width;
-          let h = img.height;
-          if (w > MAX || h > MAX) {
-            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-            else { w = Math.round(w * MAX / h); h = MAX; }
+      const mimeToExt: Record<string, string> = {
+        'image/jpeg': 'jpg', 'image/jpg': 'jpg',
+        'image/png': 'png', 'image/webp': 'webp',
+      };
+      const extension = mimeToExt[file.type] ?? 'jpg';
+
+      // 1. Pedir presigned URL al backend (valida plan + límite)
+      const { signedUrl, path } = await backendService.presignFoto(extension);
+
+      // 2. Subir binario directo a Supabase Storage con progreso real
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedUrl);
+        xhr.setRequestHeader('Content-Type', file.type);
+        xhr.upload.onprogress = (ev) => {
+          if (ev.lengthComputable) {
+            setUploadProgreso(Math.round((ev.loaded / ev.total) * 100));
           }
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d')!;
-          ctx.drawImage(img, 0, 0, w, h);
-          const compressed = canvas.toDataURL('image/jpeg', 0.8);
-          URL.revokeObjectURL(url);
-          resolve(compressed.split(',')[1]);
         };
-        img.onerror = reject;
-        img.src = url;
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve();
+          else reject(new Error(`Upload falló: HTTP ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error('Error de red al subir foto'));
+        xhr.send(file);
       });
-      const result = await backendService.subirFotoLocal(base64, extension);
+
+      // 3. Registrar en DB (confirmar ownership + actualizar array)
+      const result = await backendService.confirmFotoLocal(path);
       setFotos(result.fotos);
       mostrarMensaje('exito', result.mensaje);
     } catch (err: unknown) {
       mostrarMensaje('error', `❌ ${err instanceof Error ? err.message : 'Error al subir foto'}`);
     } finally {
       setSubiendoFoto(false);
+      setUploadProgreso(0);
       e.target.value = '';
     }
   };
@@ -625,7 +629,22 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
                         <label className={`flex items-center justify-center gap-3 border-2 border-dashed border-gray-600 rounded-xl py-6 cursor-pointer transition-colors ${subiendoFoto ? 'opacity-50 cursor-not-allowed' : 'hover:border-purple-500 hover:bg-purple-900/10'}`}>
                           <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={handleSubirFoto} disabled={subiendoFoto} className="hidden" />
                           {subiendoFoto
-                            ? <><Loader size={20} className="animate-spin text-purple-400" /><span className="text-gray-300">Subiendo...</span></>
+                            ? (
+                              <div className="flex flex-col items-center gap-2 w-full px-4">
+                                <div className="flex items-center gap-2">
+                                  <Loader size={16} className="animate-spin text-purple-400" />
+                                  <span className="text-gray-300 text-sm">
+                                    {uploadProgreso < 100 ? `Subiendo... ${uploadProgreso}%` : 'Registrando...'}
+                                  </span>
+                                </div>
+                                <div className="w-full bg-gray-700 rounded-full h-1.5">
+                                  <div
+                                    className="bg-purple-500 h-1.5 rounded-full transition-all duration-150"
+                                    style={{ width: `${uploadProgreso}%` }}
+                                  />
+                                </div>
+                              </div>
+                            )
                             : <><span className="text-2xl">📷</span><div className="text-center"><p className="text-gray-300 text-sm">Subir foto ({fotos.length}/{limite})</p><p className="text-gray-500 text-xs mt-1">JPG, PNG o WebP · máx 5MB</p></div></>
                           }
                         </label>
