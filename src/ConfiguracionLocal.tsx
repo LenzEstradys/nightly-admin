@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 import { 
-  Building2, MapPin, Clock, DollarSign, Phone, 
-  Instagram, Facebook, Image, Save, X, Plus,
+  Building2, MapPin, Clock, DollarSign, Phone,
+  Instagram, Facebook, Save, X,
   AlertCircle, CheckCircle, ArrowLeft
 } from 'lucide-react';
 
@@ -122,7 +122,7 @@ export default function ConfiguracionLocal({ localId, onGuardar, onCancelar }: C
 
       setMensaje({ tipo: 'exito', texto: '¡Perfil actualizado exitosamente!' });
       setTimeout(() => onGuardar(), 1500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error guardando:', error);
       setMensaje({ tipo: 'error', texto: 'Error al guardar. Intenta de nuevo.' });
     } finally {

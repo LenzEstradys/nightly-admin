@@ -22,8 +22,8 @@ export function usePermisos(role: UserRole | null) {
     if (!role) {
       return {
         puedeCrearLocal: false,
-        puedeEditarLocal: (_local: Local) => false,
-        puedeEliminarLocal: (_local: Local) => false,
+        puedeEditarLocal: (_: Local) => false,
+        puedeEliminarLocal: (_: Local) => false,
         puedeVerTodos: false,
         esAdmin: false,
         esPasante: false,
@@ -54,7 +54,7 @@ export function usePermisos(role: UserRole | null) {
       },
 
       /** ¿Puede eliminar locales? Solo admin principal. */
-      puedeEliminarLocal: (_local: Local): boolean => esAdminPrincipal,
+      puedeEliminarLocal: (_: Local): boolean => esAdminPrincipal,
 
       /** ¿Puede ver todos los locales? Solo admin principal ve todos sin filtro. */
       puedeVerTodos: esAdmin,

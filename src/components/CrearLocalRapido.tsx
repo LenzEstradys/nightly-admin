@@ -33,7 +33,7 @@ function validarForm(nombre: string, latitud: number | null, telefono: string): 
 
   if (!latitud) errores.ubicacion = 'Debes obtener la ubicación del local';
 
-  const tel = telefono.replace(/[\s\-\(\)]/g, '');
+  const tel = telefono.replace(/[\s\-()]/g, '');
   if (!tel) errores.telefono = 'El teléfono es obligatorio';
   else if (!TELEFONO_BO.test(tel)) errores.telefono = 'Formato inválido. Ej: 76543210 (8 dígitos)';
   return errores;
@@ -173,7 +173,7 @@ export default function CrearLocalRapido({ onLocalCreado, onCancelar }: CrearLoc
     setCargando(true);
     setErrorGeneral(null);
     try {
-      const tel = telefono.replace(/[\s\-\(\)]/g, '');
+      const tel = telefono.replace(/[\s\-()]/g, '');
 
       // 1. Crear local vía backend (service_key, bypasea RLS)
       const result = await backendService.crearLocal({

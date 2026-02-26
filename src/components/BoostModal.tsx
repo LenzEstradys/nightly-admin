@@ -4,6 +4,13 @@
  */
 
 import { useState } from 'react';
+
+interface BoostResult {
+  success: boolean;
+  error?: string;
+  mensaje: string;
+  boosts_restantes: number;
+}
 import { X, Zap, Users, Clock, Target, DollarSign, Send } from 'lucide-react';
 import { supabase } from '../supabase';
 
@@ -46,7 +53,7 @@ export default function BoostModal({
 
       if (error) throw error;
 
-      const result = data as any;
+      const result = data as BoostResult;
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -54,9 +61,9 @@ export default function BoostModal({
       alert(`✅ ${result.mensaje}\n\nBoosts restantes: ${result.boosts_restantes}`);
       onBoostEnviado();
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error enviando boost:', error);
-      alert(`❌ Error: ${error.message}`);
+      alert(`❌ Error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setEnviando(false);
     }

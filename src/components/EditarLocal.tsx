@@ -43,7 +43,7 @@ function validar(nombre: string, telefono: string): Errores {
   } else if (nombre.trim().length > 80) {
     errores.nombre = 'El nombre no puede superar 80 caracteres';
   }
-  const tel = telefono.replace(/[\s\-\(\)]/g, '');
+  const tel = telefono.replace(/[\s\-()]/g, '');
   if (tel && !TELEFONO_BO.test(tel)) {
     errores.telefono = 'Formato inválido. Ej: 76543210 (8 dígitos)';
   }
@@ -75,7 +75,7 @@ export default function EditarLocal({ local, onGuardado, onCancelar }: EditarLoc
     setMensajeError(null);
 
     try {
-      const tel = telefono.replace(/[\s\-\(\)]/g, '');
+      const tel = telefono.replace(/[\s\-()]/g, '');
       const updateData = {
         nombre: nombre.trim(),
         tipo,

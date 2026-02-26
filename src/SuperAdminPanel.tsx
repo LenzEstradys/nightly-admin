@@ -9,8 +9,8 @@ import { supabase } from './supabase';
 import { useAuth } from './hooks/useAuth';
 import { usePermisos, separarLocalesPorCreador } from './hooks/usePermisos';
 import { 
-  LayoutDashboard, Building2, Users, Search, Edit, 
-  Trash2, Key, CheckCircle, XCircle, ArrowLeft,
+  LayoutDashboard, Building2, Users, Search, Edit,
+  Trash2, Key, CheckCircle, ArrowLeft,
   TrendingUp, Activity, MapPin, Eye, EyeOff, User,
   Shield, Power, PowerOff, AlertTriangle, Loader, Crown
 } from 'lucide-react';

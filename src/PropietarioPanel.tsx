@@ -16,7 +16,7 @@ import {
   Star, Zap, BarChart2, ChevronRight
 } from 'lucide-react';
 import TarjetaPlan from './components/TarjetaPlan';
-import { type TipoPlan, planVigente, PLANES } from './types/planes';
+import { type TipoPlan, planVigente } from './types/planes';
 import { backendService } from './services/backendService';
 
 interface PropietarioData {
@@ -97,7 +97,6 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
 
   const promosUsadas = local ? getPromosEsteMes(local.id) : 0;
   const puedeStats = plan === 'profesional' || plan === 'premium';
-  const puedePromos = puedeStats ? true : promosUsadas < 3;
   const esPremium = plan === 'premium';
 
   useEffect(() => {
@@ -267,7 +266,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
       const result = await backendService.eliminarFotoLocal(url);
       setFotos(result.fotos);
       mostrarMensaje('exito', 'Foto eliminada');
-    } catch (err: unknown) {
+    } catch {
       mostrarMensaje('error', 'Error al eliminar foto');
     } finally {
       setEliminandoFoto(null);

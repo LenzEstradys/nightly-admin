@@ -38,20 +38,21 @@ export default function Login({ onLoginSuccess, onIrARegistro }: LoginProps) {
         // automáticamente cuando detecte el cambio de sesión
         onLoginSuccess();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error en login:', error);
-      
+
       // Mensajes de error más amigables
       let errorMessage = 'Error al iniciar sesión';
-      
-      if (error.message?.includes('Invalid login credentials')) {
+      const errMsg = error instanceof Error ? error.message : '';
+
+      if (errMsg.includes('Invalid login credentials')) {
         errorMessage = 'Email o contraseña incorrectos';
-      } else if (error.message?.includes('Email not confirmed')) {
+      } else if (errMsg.includes('Email not confirmed')) {
         errorMessage = 'Por favor confirma tu email antes de iniciar sesión';
-      } else if (error.message) {
-        errorMessage = error.message;
+      } else if (errMsg) {
+        errorMessage = errMsg;
       }
-      
+
       setError(errorMessage);
     } finally {
       setCargando(false);

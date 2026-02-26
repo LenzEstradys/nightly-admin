@@ -149,9 +149,9 @@ export default function RegistroPropietario({ onVolverALogin, onRegistroExitoso 
         setTimeout(() => onVolverALogin(), 2500);
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error en registro:', error);
-      setError(error.message || 'Error al crear cuenta');
+      setError(error instanceof Error ? error.message : 'Error al crear cuenta');
     } finally {
       setCargando(false);
     }
