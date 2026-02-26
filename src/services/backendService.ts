@@ -93,12 +93,34 @@ export const backendService = {
     return handleResponse(res);
   },
 
-  async subirFotoLocal(fotoBase64: string, extension: string) {
+  async presignFoto(extension: string): Promise<{
+    success: boolean;
+    signedUrl: string;
+    path: string;
+    publicUrl: string;
+    fotosActuales: number;
+    limite: number;
+  }> {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${BACKEND_URL}/api/owner/local/fotos`, {
+    const res = await fetch(`${BACKEND_URL}/api/owner/local/fotos/presign`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ fotoBase64, extension }),
+      body: JSON.stringify({ extension }),
+    });
+    return handleResponse(res);
+  },
+
+  async confirmFotoLocal(path: string): Promise<{
+    success: boolean;
+    url: string;
+    fotos: string[];
+    mensaje: string;
+  }> {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${BACKEND_URL}/api/owner/local/fotos/confirm`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ path }),
     });
     return handleResponse(res);
   },
