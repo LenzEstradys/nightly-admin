@@ -42,6 +42,7 @@ interface LocalData {
   promocion: string | null;
   instagram: string | null;
   facebook: string | null;
+  tiktok: string | null;
   horario_apertura: string | null;
   horario_cierre: string | null;
   rango_precio: string | null;
@@ -87,6 +88,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
   // Estados Pro/Premium
   const [instagram, setInstagram] = useState('');
   const [facebook, setFacebook] = useState('');
+  const [tiktok, setTiktok] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [rangoPrecio, setRangoPrecio] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -137,6 +139,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
         // Pro/Premium
         setInstagram(data.instagram || '');
         setFacebook(data.facebook || '');
+        setTiktok(data.tiktok || '');
         setDescripcion(data.descripcion || '');
         setRangoPrecio(data.rango_precio || '');
         setTelefono(data.telefono || '');
@@ -186,6 +189,7 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
       if (puedeStats) {
         campos.instagram = instagram.trim() || null;
         campos.facebook = facebook.trim() || null;
+        campos.tiktok = tiktok.trim() || null;
         campos.descripcion = descripcion.trim() || null;
         campos.rango_precio = rangoPrecio || null;
         campos.telefono = telefono.trim() || null;
@@ -568,6 +572,18 @@ export default function PropietarioPanel({ onVolver, propietarioData }: Propieta
                     <input type="text" value={facebook} onChange={e => setFacebook(e.target.value)}
                       placeholder="facebook.com/tulocal"
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500" />
+                  </div>
+                  {/* TikTok */}
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2 flex items-center gap-2">
+                      🎵 TikTok
+                    </label>
+                    <div className="flex items-center bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                      <span className="px-3 text-gray-400 text-sm">@</span>
+                      <input type="text" value={tiktok.replace('@', '')} onChange={e => setTiktok(e.target.value)}
+                        placeholder="tulocal"
+                        className="flex-1 bg-transparent py-3 pr-4 text-white placeholder-gray-500" />
+                    </div>
                   </div>
                   <p className="text-xs text-gray-400 pt-2">
                     💾 Recuerda presionar <strong>Guardar</strong> para aplicar los cambios.

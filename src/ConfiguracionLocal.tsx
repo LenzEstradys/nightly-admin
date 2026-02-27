@@ -19,6 +19,7 @@ interface LocalData {
   telefono: string;
   instagram: string;
   facebook: string;
+  tiktok: string;
   horario_apertura: string;
   horario_cierre: string;
   rango_precio: string;
@@ -53,6 +54,7 @@ export default function ConfiguracionLocal({ localId, onGuardar, onCancelar }: C
     telefono: '',
     instagram: '',
     facebook: '',
+    tiktok: '',
     horario_apertura: '18:00',
     horario_cierre: '04:00',
     rango_precio: '$$',
@@ -83,6 +85,7 @@ export default function ConfiguracionLocal({ localId, onGuardar, onCancelar }: C
           telefono: data.telefono || '',
           instagram: data.instagram || '',
           facebook: data.facebook || '',
+          tiktok: data.tiktok || '',
           horario_apertura: data.horario_apertura || '18:00',
           horario_cierre: data.horario_cierre || '04:00',
           rango_precio: data.rango_precio || '$$',
@@ -110,6 +113,7 @@ export default function ConfiguracionLocal({ localId, onGuardar, onCancelar }: C
           telefono: datos.telefono,
           instagram: datos.instagram,
           facebook: datos.facebook,
+          tiktok: datos.tiktok,
           horario_apertura: datos.horario_apertura,
           horario_cierre: datos.horario_cierre,
           rango_precio: datos.rango_precio,
@@ -299,6 +303,23 @@ export default function ConfiguracionLocal({ localId, onGuardar, onCancelar }: C
                     onChange={(e) => setDatos({ ...datos, facebook: e.target.value })}
                     placeholder="Tu Local"
                     className="w-full bg-gray-700/50 border border-gray-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder:text-gray-500"
+                  />
+                </div>
+              </div>
+
+              {/* TikTok */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">
+                  🎵 TikTok
+                </label>
+                <div className="flex items-center bg-gray-700/50 border border-gray-600 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-purple-500">
+                  <span className="px-4 text-gray-400 text-sm">@</span>
+                  <input
+                    type="text"
+                    value={datos.tiktok.replace('@', '')}
+                    onChange={(e) => setDatos({ ...datos, tiktok: e.target.value })}
+                    placeholder="tulocal"
+                    className="flex-1 bg-transparent py-3 pr-4 text-white placeholder:text-gray-500 focus:outline-none"
                   />
                 </div>
               </div>
